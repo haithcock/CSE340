@@ -13,7 +13,7 @@ const static = require("./routes/static")
 const baseController = require("./controllers/baseControllers")
 const inventoryRoute = require("./routes/inventoryRoute")
 const utilities = require("./utilities/")
-
+const errorTestRouter = require('./routes/errorTest')
 /* ***********************
  * view engine and templates
  *************************/
@@ -29,26 +29,36 @@ app.use(static)
 app.get('/', utilities.handleErrors(baseController.buildHome));
 // Inventory routes
 app.use("/inv", inventoryRoute)
+app.use('/', errorTestRouter);
+
 // File Not Found Route - must be last route in list
 app.use(async (req, res, next) => {
   next({status: 404, message: 'Sorry, we appear to have lost that page.'})
 })
+
+
+
 /* ***********************
 * Express Error Handler
 * Place after all other middleware
 *************************/
 app.use(async (err, req, res, next) => {
-  let nav = await utilities.getNav()
-  console.error(`Error at: "${req.originalUrl}": ${err.message}`)
-  if(err.status == 404){ message = err.message} else {message = 'Oh no! There was a crash. Maybe try a different route?'}
-  res.render("errors/error", {
-    title: err.status || 'Server Error',
+  const status = err.status || 500;
+  const nav = await utilities.getNav();
+
+  console.error(`Error at: "${req.originalUrl}": ${err.message}`);
+
+  const message = status === 404
+    ? err.message
+    : 'Oh no! There was a crash. Maybe try a different route?';
+
+  res.status(status).render('errors/error', {
+    title: status,
     message,
+    error: process.env.NODE_ENV === 'development' ? err : {},
     nav
-  })
-})
-
-
+  });
+});
 
 /* ***********************
  * Local Server Information
