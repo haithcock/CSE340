@@ -51,10 +51,12 @@ app.set("layout", "./layouts/layout") // not at views root
 app.use(static)
 //Index route
 app.get('/', utilities.handleErrors(baseController.buildHome))
+
 // Inventory routes
+app.use('/account', accountRoute)
 app.use("/inv", inventoryRoute)
 app.use('/', errorTestRouter)
-app.use('/account', accountRoute)
+
 
 
 // File Not Found Route - must be last route in list
