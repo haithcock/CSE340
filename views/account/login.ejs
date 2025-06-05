@@ -5,24 +5,10 @@
       res.redirect('/')
     } %>
 
-    <!--A message block (line 9)-->
-    <!--<%# messages() %>-->
+<!--A message block (line 9)-->
+<%- messages() %>
 
-
-    <!--The inventory Items Display (line 13)-->
-    <!--<%- grid %>-->
-
-
-
-<!-->
-<div class ="account">
-  <h1>Login</h1>
-
-  <% if (message) { %>
-    <p style="color: red;"><%= message %></p>
-  <% } %>
-
-  <form action="/account/login" method="POST">
+<form action="/account/login" method="POST">
     <label for="email">Email:</label>
     <input 
       type="email" 
@@ -47,6 +33,3 @@
   </form>
 
   <p>Don't have an account? <a href="/account/register">Register here</a></p>
-</div>
-
--->
