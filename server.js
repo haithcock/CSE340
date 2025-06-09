@@ -48,12 +48,13 @@ app.set("layout", "./layouts/layout") // not at views root
 /* ***********************
  * Routes
  *************************/
+app.use('/account', accountRoute)
 app.use(static)
 //Index route
 app.get('/', utilities.handleErrors(baseController.buildHome))
 
 // Inventory routes
-app.use('/account', accountRoute)
+
 app.use("/inv", inventoryRoute)
 app.use('/', errorTestRouter)
 
