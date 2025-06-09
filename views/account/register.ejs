@@ -5,23 +5,23 @@
   
   
   <form action="/account/register" method="post">
-    <label for="firstname">First Name</label>
-    <input type="text" id="firstname" name="firstname" required 
-      value="<%= typeof firstname != 'undefined' ? firstname : '' %>">
+    <label for="account_firstname">First Name</label>
+    <input type="text" id="account_firstname" name="account_firstname" required 
+      value="<%= typeof account_firstname != 'undefined' ? account_firstname : '' %>">
 
-    <label for="lastname">Last Name</label>
-    <input type="text" id="lastname" name="lastname" required 
-      value="<%= typeof lastname != 'undefined' ? lastname : '' %>">
+    <label for="account_lastname">Last Name</label>
+    <input type="text" id="account_lastname" name="account_lastname" required 
+      value="<%= typeof account_lastname != 'undefined' ? account_lastname : '' %>">
 
-    <label for="email">Email</label>
-    <input type="email" id="email" name="email" required 
-      value="<%= typeof email != 'undefined' ? email : '' %>">
+    <label for="account_email">Email</label>
+    <input type="account_email" id="account_email" name="account_email" required 
+      value="<%= typeof account_email != 'undefined' ? account_email : '' %>">
 
-    <label for="password">Password</label>
+    <label for="account_password">Password</label>
     <input 
-    type="password" 
-    id="password" 
-    name="password" 
+    type="account_password" 
+    id="account_password" 
+    name="account_password" 
     required
     minlength="12"
     pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{12,}$"
