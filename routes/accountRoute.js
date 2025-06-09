@@ -5,6 +5,8 @@ const utlIndex = require("../utilities/index")
 const accountController = require("../controllers/accountController")
 // Route to build inventory by classification view
 router.get("/login", accountController.buildLogin);
+router.get("/register", accountController.buildRegister);
+
 
 
 // Route to build vehicle view
