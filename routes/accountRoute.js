@@ -1,11 +1,13 @@
 // Needed Resources 
 const express = require("express")
 const router = new express.Router() 
-const utlIndex = require("../utilities/index")
+const utilities = require("../utilities/index")
 const accountController = require("../controllers/accountController")
 // Route to build inventory by classification view
 router.get("/login", accountController.buildLogin);
 router.get("/register", accountController.buildRegister);
+// Route to register a new account
+router.post("/register", utilities.handleErrors(accountController.registerAccount))
 
 
 
