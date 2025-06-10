@@ -1,0 +1,14 @@
+<!--Content heading (lines 2-6)-->
+<% if (title) { %>
+    <h1><%= title %></h1>
+    <% } else {
+      res.redirect('/')
+    } %>
+
+<!--A message block (line 9)-->
+<%- messages() %>
+
+
+
+  <p>Click here to add Classification <a href="/inv/addClass">Add Classification</a></p>
+    <p>Click here to add inventory <a href="/inv/addInv">Add inventory</a></p>

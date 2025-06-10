@@ -44,5 +44,61 @@ invCont.buildByVehicleId = async function (req, res, next) {
   })
 }
 
+/* *************************
+ * Build inventory management view
+ * ************************* */
+invCont.buildManagement = async function (req, res, next) {
+  let nav = await utilities.getNav()
+  res.render("./inventory/management", {
+    title: "Inventory Management",
+    nav,
+    errors:null
+  })
+}
 
+/* *************************
+ * Build new classification view
+ * ************************* */
+invCont.buildAddClassification = async function (req, res, next) {
+  let nav = await utilities.getNav()
+  res.render("./inventory/add-classification", {
+    title: "Add Classification",
+    nav,
+    errors:null
+  })
+}
+
+
+/* *************************
+ * Register new classification
+ * ************************* */
+invCont.registerClassification = async function (req, res, next) {
+  let nav = await utilities.getNav()
+  const { classification_name } = req.body
+
+  // Validate the classification name
+//if (!classification_name || classification_name.trim() === "") {
+ //   req.flash("notice", "Please enter a valid classification name.")
+   // return res.render("./inventory/add-classification", {
+   //   title: "Add Classification",
+    //  nav,
+    //  errors: null
+    //})
+  // }
+
+  // Register the new classification
+  const regResult = await invModel.registerClassification(classification_name)
+
+  if (regResult) {
+    req.flash("notice", "Classification added successfully.")
+    return res.redirect("/inv")
+  } else {
+    req.flash("notice", "Error adding classification. Please try again.")
+    return res.render("./inventory/add-classification", {
+      title: "Add Classification",
+      nav,
+      errors: null
+    })
+  }
+}
 module.exports = invCont
