@@ -2,7 +2,13 @@
 <main>
   <h1><%= title %></h1>
 
-  
+  <% if (errors) { %>
+    <ul class="notice">
+      <% errors.array().forEach(error => { %>
+        <li><%= error.msg %></li>
+      <% }) %>
+    </ul>
+  <% } %>
   
   <form action="/account/register" method="post">
     <label for="account_firstname">First Name</label>
