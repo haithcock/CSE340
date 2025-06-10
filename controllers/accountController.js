@@ -25,6 +25,15 @@ async function buildRegister(req, res, next) {
   })
 }
 /* ****************************************
+ * Process Login Request
+ * *************************************** */
+async function accountLogin(req, res, next) {
+  // For now, this is just a placeholder.
+  // You will add actual login logic here later.
+  req.flash("notice", "Login process initiated!")
+  res.redirect("/account/") // Redirect to account management or dashboard
+}
+/* ****************************************
 *  Process Registration
 * *************************************** */
 async function registerAccount(req, res) {
@@ -55,4 +64,4 @@ async function registerAccount(req, res) {
     })
   }
 }
-module.exports = { buildLogin, buildRegister, registerAccount }
+module.exports = { buildLogin, buildRegister, registerAccount, accountLogin }
