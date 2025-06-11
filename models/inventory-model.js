@@ -57,7 +57,16 @@ async function registerClassification(classification_name){
     return error.message
   }
 }
+//register new inventory
+async function registerInventory(inv_make, inv_model, inv_year, inv_description, inv_price, inv_miles, inv_color){
+  try {
+    const sql = "INSERT INTO inventory (inv_make, inv_model, inv_year, inv_description, inv_price, inv_miles, inv_color, inv_image, inv_thumbnail, classification_id) VALUES ($1, $2, $3, $4, $5, $6, $7, 'Image not found', 'Image not found', 1) RETURNING *"
+    return await pool.query(sql, [inv_make, inv_model, inv_year, inv_description, inv_price, inv_miles, inv_color])
+  } catch (error) {
+    return error.message
+  }
+} 
 
 
 
-module.exports = {getClassifications, getInventoryByClassificationId, getInventoryByInventoryId, registerClassification};
+module.exports = {getClassifications, getInventoryByClassificationId, getInventoryByInventoryId, registerClassification, registerInventory};

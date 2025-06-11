@@ -68,6 +68,18 @@ invCont.buildAddClassification = async function (req, res, next) {
   })
 }
 
+/* *************************
+ * Build new inventory view
+ * ************************* */
+invCont.buildAddInventory = async function (req, res, next) {
+  let nav = await utilities.getNav()
+  res.render("./inventory/add-inventory", {
+    title: "Add Inventory",
+    nav,
+    errors:null
+  })
+}
+
 
 /* *************************
  * Register new classification
@@ -101,4 +113,35 @@ invCont.registerClassification = async function (req, res, next) {
     })
   }
 }
-module.exports = invCont
+
+/* *************************
+ * Register new inventory item
+ * ************************* */
+invCont.registerInventory = async function (req, res, next) {
+  let nav = await utilities.getNav()
+  const { inv_make, inv_model, inv_year, inv_description, inv_price, inv_miles, inv_color} = req.body
+
+  const regResult = await invModel.registerInventory(
+    inv_make,
+    inv_model,
+    inv_year,
+    inv_description,
+    inv_price,
+    inv_miles,
+    inv_color
+  )
+  if (regResult) {
+    req.flash("notice", "Inventory item added successfully.")
+    return res.redirect("/inv")
+  } else {
+    req.flash("notice", "Error adding inventory item. Please try again.")
+    return res.render("./inventory/add-inventory", {
+      title: "Add Inventory",
+      nav,
+      errors: null
+    })
+  }
+
+
+}
+module.exports = invCont;
