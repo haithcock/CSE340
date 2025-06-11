@@ -1,0 +1,10 @@
+<!--Content heading (lines 2-6)-->
+<% if (title) { %>
+    <h1><%= title %></h1>
+    <% } else {
+      res.redirect('/')
+    } %>
+
+<!--A message block (line 9)-->
+<%- messages() %>
+<p>You're logged in!</p>

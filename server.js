@@ -18,6 +18,7 @@ const session = require("express-session")
 const pool = require('./database/')
 const accountRoute = require("./routes/accountRoute")
 const bodyParser = require("body-parser")
+const cookieParser = require("cookie-parser")
 
 /* ***********************
  * Middleware
@@ -93,6 +94,7 @@ app.use(async (err, req, res, next) => {
     nav
   });
 });
+app.use(cookieParser())
 
 /* ***********************
  * Local Server Information
