@@ -52,56 +52,54 @@ validate.registationRules = () => {
         .withMessage("Password does not meet requirements."),
     ];
 }
-    validate.loginRules = () => {
-        return [
-          body("account_email")
-            .trim()
-            .isEmail()
-            .withMessage("A valid email is required."),
-      
-          body("account_password")
-            .trim()
-            .notEmpty()
-            .withMessage("Password is required.")
-        ]
-      }
-      /* ******************************
- * Check login data and return errors or continue
- * ***************************** */
+validate.loginRules = () => {
+  return [
+    // Email: Normalize and validate
+    body("account_email")
+      .trim()
+      .escape()
+      .normalizeEmail()
+      .isEmail()
+      .withMessage("A valid email is required."),
+
+    // Password: Basic validation
+    body("account_password")
+      .trim()
+      .notEmpty()
+      .withMessage("Password is required.")
+  ];
+};
 validate.checkLoginData = async (req, res, next) => {
-    const { account_email } = req.body
-    let errors = validationResult(req)
-    if (!errors.isEmpty()) {
-      let nav = await utilities.getNav()
-      res.render("account/login", {
-        title: "Login",
-        nav,
-        errors,
-        account_email
-      })
-      return
-    }
-    next()
+  const { account_email } = req.body;
+  const result = validationResult(req); // Get validation result
+  if (!result.isEmpty()) {
+    const nav = await utilities.getNav();
+    res.render("account/login", {
+      title: "Login",
+      nav,
+      errors: result.array(), // Convert to array
+      account_email,
+    });
+    return;
   }
-  
-      
-  ;
-  validate.checkRegData = async (req, res, next) => {
-    const { account_firstname, account_lastname, account_email } = req.body;
-    let errors = [];
-    errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      let nav = await utilities.getNav();
-      res.render("account/register", {
-        errors,
-        title: "Registration",
-        nav,
-        account_firstname,
-        account_lastname,
-        account_email,
-      });
-      return; // send control back to application, so the view does not "hang" 
-    }
-    next(); // if no errors, continue to the controller for registration 
-  };
+  next();
+};
+
+validate.checkRegData = async (req, res, next) => {
+  const { account_firstname, account_lastname, account_email } = req.body;
+  const result = validationResult(req); // Get validation result
+  if (!result.isEmpty()) {
+    const nav = await utilities.getNav();
+    res.render("account/register", {
+      errors: result.array(), // Convert to array
+      title: "Registration",
+      nav,
+      account_firstname,
+      account_lastname,
+      account_email,
+    });
+    return;
+  }
+  next();
+};
   module.exports = validate;

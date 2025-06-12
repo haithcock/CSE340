@@ -10,21 +10,21 @@
 
 
 <form action="/account/login" method="POST">
-    <label for="email">Email:</label>
+    <label for="account_email">Email:</label>
     <input 
-      type="email" 
-      id="email" 
-      name="email" 
+      type="account_email" 
+      id="account_email" 
+      name="account_email" 
       required 
       value="<%= typeof email !== 'undefined' ? email : '' %>"
     >
     <br>
 
-    <label for="password">Password:</label>
+    <label for="account_password">Password:</label>
     <input 
       type="password" 
-      id="password" 
-      name="password" 
+      id="account_password" 
+      name="account_password" 
       required 
       minlength="8"
     >
