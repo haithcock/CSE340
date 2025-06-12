@@ -8,7 +8,7 @@ const regValidate = require('../utilities/account-validation');
 // Route to build inventory by classification view
 router.get("/login", accountController.buildLogin);
 router.get("/register", accountController.buildRegister);
-router.get("/", accountController.accountManagement); // Default route to login
+router.get("/", utilities.checkLogin, utilities.handleErrors (accountController.buildLoggedIn)); // Default route to login
 // Route to register a new account 
 router.post(
     "/register",
@@ -24,7 +24,7 @@ router.post(
     "/login",
     regValidate.loginRules(),
     regValidate.checkLoginData,
-    utilities.handleErrors(accountController.accountManagement)
+    utilities.handleErrors(accountController.accountLogin)
   );
 
 

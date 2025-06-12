@@ -27,15 +27,7 @@ async function buildRegister(req, res, next) {
     errors: null
   })
 }
-/* ****************************************
- * Process Login Request
- * *************************************** */
-async function accountLogin(req, res, next) {
-  // For now, this is just a placeholder.
-  // You will add actual login logic here later.
-  req.flash("notice", "Login process initiated!")
-  res.redirect("/account/") // Redirect to account management or dashboard
-}
+
 /* ****************************************
 *  Process Registration
 * *************************************** */
@@ -90,7 +82,7 @@ async function accountLogin(req, res) {
   const { account_email, account_password } = req.body
   const accountData = await accountModel.getAccountByEmail(account_email)
   if (!accountData) {
-    req.flash("notice", "Please check your credentials and try again.")
+    req.flash("notice", "Please check your credentials and try again stupid.")
     res.status(400).render("account/login", {
       title: "Login",
       nav,
@@ -125,14 +117,15 @@ async function accountLogin(req, res) {
 }
 
 /* ****************************************
- *  Build Account Management page
- * *************************************** */
-async function accountManagement(req, res) {
+*  Deliver logged in view
+* *************************************** */
+async function buildLoggedIn(req, res, next) {
   let nav = await utilities.getNav()
   res.render("account/loggedIn", {
-    title: "Account Management",
+    title: "Account Home",
     nav,
     errors: null
   })
 }
-module.exports = { buildLogin, buildRegister, registerAccount, accountLogin, accountManagement  }
+
+module.exports = { buildLogin, buildRegister, registerAccount, accountLogin, buildLoggedIn }

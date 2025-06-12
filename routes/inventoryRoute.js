@@ -19,6 +19,9 @@ router.get("", invController.buildManagement);
 router.get("/addClass", invController.buildAddClassification);
 router.get("/addInv", invController.buildAddInventory);
 
+//route to manage inventory by classification
+router.get("/getInventory/:classification_id", utilities.handleErrors(invController.getInventoryJSON))
+
 router.post(
     '/addClass',
     regValidate.classificationRules(),
