@@ -21,6 +21,8 @@ router.get("/addInv", invController.buildAddInventory);
 
 //route to manage inventory by classification
 router.get("/getInventory/:classification_id", utilities.handleErrors(invController.getInventoryJSON))
+//route to modify inventory
+router.get("/edit/:inv_id", utilities.handleErrors(invController.buildModifyInventoryPage))
 
 router.post(
     '/addClass',

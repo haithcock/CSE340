@@ -1,0 +1,75 @@
+
+<main>
+    <h1><%= title %></h1>
+    <%- messages('partials/flash-messages') %>
+
+    <% if (errors && errors.length > 0) { %>
+      <ul class="notice">
+        <% errors.forEach(error => { %>
+          <li><%= error.msg %></li>
+        <% }) %>
+      </ul>
+    <% } %>
+    <form action="/inv/update" method="post" >
+        <p>DIRECTION: The updated inventory item name cannot contain a space or special character of any kind!</p>
+
+      <label for="inv_make">inventory make</label>
+      <input type="text" 
+      id="inv_make" 
+      name="inv_make" 
+      required value="<%= typeof inv_make != 'undefined' ? inv_make : '' %>"
+      pattern="^[a-zA-Z]+$"
+      title="inventory make must not contain spaces or special characters.">
+
+      <label for="inv_model">inventory model</label>
+      <input type="text" 
+      id="inv_model" 
+      name="inv_model" 
+      required value="<%= typeof inv_model != 'undefined' ? inv_model : '' %>"
+      pattern="^[a-zA-Z]+$"
+      title="inventory model must not contain spaces or special characters.">
+      
+      <label for="inv_year">inventory year</label>
+      <input type="number" 
+      id="inv_year" 
+      name="inv_year" 
+      required value="<%= typeof inv_year != 'undefined' ? inv_year : '' %>"
+      pattern="^[0-9]{4}$"
+      title="inventory year must not contain spaces or special characters.">
+
+      <label for="inv_description">inventory description</label>
+      <input type="text" 
+      id="inv_description" 
+      name="inv_description" 
+      required value="<%= typeof inv_description != 'undefined' ? inv_description : '' %>"
+      pattern="^[a-zA-Z\s]+$"
+      title="inventory description must not contain spaces or special characters.">
+
+      <label for="inv_price">inventory price</label>
+      <input type="number" 
+      id="inv_price" 
+      name="inv_price" 
+      required value="<%= typeof inv_price != 'undefined' ? inv_price : '' %>"
+      pattern="^[0-9]+(\.[0-9]{1,2})?$"
+      title="inventory price must not contain spaces or special characters.">
+
+      <label for="inv_miles">inventory miles</label>
+      <input type="number" 
+      id="inv_miles" 
+      name="inv_miles" 
+      required value="<%= typeof inv_miles != 'undefined' ? inv_miles : '' %>"
+      pattern="^\d+$"
+      title="inventory miles must not contain spaces or special characters.">
+
+      <label for="inv_color">inventory color</label>
+      <input type="text" 
+      id="inv_color" 
+      name="inv_color" 
+      required value="<%= typeof inv_color != 'undefined' ? inv_color : '' %>"
+      pattern="^[a-zA-Z]+$"
+      title="inventory color must not contain spaces or special characters.">
+
+      <button type="submit">Update inventory.</button>
+    </form>
+  </main>
+  
