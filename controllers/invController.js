@@ -292,4 +292,128 @@ invCont.updateInventory = async function (req, res, next) {
   }
 }
 
+
+
+/* ***************************
+ *  Build DELETE inventory view and deliver the page
+ * ************************** */
+invCont.buildDeleteInventory = async function (req, res, next) {
+  console.log('Starting buildModifyInventoryPage function');
+  try {
+    const inv_id = parseInt(req.params.inv_id);
+    console.log(`Parsed inventory ID: ${inv_id}`);
+
+    console.log('Getting navigation data...');
+    let nav = await utilities.getNav();
+    console.log('Navigation data retrieved');
+
+    console.log(`Fetching inventory data for ID: ${inv_id}...`);
+    const itemData = await invModel.getInventoryByInventoryId(inv_id);
+    console.log('Inventory data retrieved:', itemData);
+
+    const item = itemData[0]; // <-- This is the key fix
+    if (!item) {
+      throw new Error(`No inventory item found with ID: ${inv_id}`);
+    }
+
+
+    console.log('Building classification list...');
+    const classificationSelect = await utilities.buildClassificationList(itemData.classification_id);
+    console.log('Classification list built');
+
+    const itemName = `${item.inv_make} ${item.inv_model}`;
+    console.log(`Preparing to render view for: ${itemName}`);
+
+    res.render("./inventory/delete-confirm", {
+      title: "Delete " + itemName,
+      nav,
+      classificationSelect: classificationSelect,
+      errors: null,
+      inv_id: item.inv_id,
+      inv_make: item.inv_make,
+      inv_model: item.inv_model,
+      inv_year: item.inv_year,
+      inv_description: item.inv_description,
+      inv_image: item.inv_image,
+      inv_thumbnail: item.inv_thumbnail,
+      inv_price: item.inv_price,
+      inv_miles: item.inv_miles,
+      inv_color: item.inv_color,
+      classification_id: item.classification_id
+    });
+    console.log('Render completed successfully');
+  } catch (error) {
+    console.error('Error in buildDeleteInventory:', error);
+    next(error); // Make sure to pass the error to the error-handling middleware
+  }
+}
+
+
+
+/* ***************************
+ *  DELETE Inventory Data
+ * ************************** */
+invCont.deleteInventory = async function (req, res, next) {
+  let nav = await utilities.getNav()
+  const inv_id = parseInt(req.body.inv_id);
+  console.log(`Parsed inventory ID: ${inv_id}`);
+
+  console.log(`Fetching inventory data for ID: ${inv_id}...`);
+  const itemData = await invModel.getInventoryByInventoryId(inv_id);
+  console.log('Inventory data retrieved:', itemData);
+
+  const item = itemData[0]; // <-- This is the key fix
+  if (!item) {
+    throw new Error(`No inventory item found with ID: ${inv_id}`);
+  }
+
+  const itemName = item.inv_make + " " + item.inv_model
+
+  const updateResult = await invModel.deletingInventory(
+    inv_id  
+    /*
+    inv_make,
+    inv_model,
+    inv_description,
+    inv_image,
+    inv_thumbnail,
+    inv_price,
+    inv_year,
+    inv_miles,
+    inv_color,
+    classification_id
+    */
+  )
+
+  if (updateResult) {
+    req.flash("notice", `The ${itemName} was successfully DELETED.`)
+    res.redirect("/inv/")
+  } else {
+
+    console.log('Building classification list...');
+    const classificationSelect = await utilities.buildClassificationList(itemData.classification_id);
+    console.log('Classification list built');
+
+    req.flash("notice", "Sorry, the DELETION failed.")
+    res.status(501).render("inventory/delete-confirm", {
+    
+        title: "Delete " + itemName,
+        nav,
+        classificationSelect: classificationSelect,
+        errors: null,
+        inv_id: item.inv_id,
+        inv_make: item.inv_make,
+        inv_model: item.inv_model,
+        inv_year: item.inv_year,
+        inv_description: item.inv_description,
+        inv_image: item.inv_image,
+        inv_thumbnail: item.inv_thumbnail,
+        inv_price: item.inv_price,
+        inv_miles: item.inv_miles,
+        inv_color: item.inv_color,
+        classification_id: item.classification_id
+    })
+  }
+}
+
 module.exports = invCont;

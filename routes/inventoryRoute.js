@@ -23,7 +23,8 @@ router.get("/addInv", invController.buildAddInventory);
 router.get("/getInventory/:classification_id", utilities.handleErrors(invController.getInventoryJSON))
 //route to modify inventory
 router.get("/edit/:inv_id", utilities.handleErrors(invController.buildModifyInventoryPage))
-
+//route to delete inventory
+router.get("/delete/:inv_id", utilities.handleErrors(invController.buildDeleteInventory))
 router.post(
     '/addClass',
     regValidate.classificationRules(),
@@ -43,6 +44,12 @@ router.post(
     regValidate.inventoryRules(),
     regValidate.checkUpdateData,
     utilities.handleErrors(invController.updateInventory))
+
+router.post(
+    "/delete/",
+   // regValidate.inventoryRules(),
+   // regValidate.checkUpdateData,
+    utilities.handleErrors(invController.deleteInventory))    
 
 
 
