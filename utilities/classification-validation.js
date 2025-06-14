@@ -105,6 +105,24 @@ validate.checkInventoryData = async (req, res, next) => {
   next()
 }
 
+validate.checkUpdateData = async (req, res, next) => {
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    const classificationList = await utilities.buildClassificationList(req.body.classification_id)
+    let nav = await utilities.getNav()
+    res.render("inventory/edit-inventory", {
+      inv_id: req.params.inv_id, //double check this later if you get errors koda
+      title: "Edit Vehicle",
+      nav,
+      classificationList,
+      errors: errors.array(),
+      ...req.body, // Sticky values
+    })
+    return
+  }
+  next()
+}
+
 validate.checkClassificationData = async (req, res, next) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {

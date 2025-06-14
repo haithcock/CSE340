@@ -10,7 +10,7 @@
         <% }) %>
       </ul>
     <% } %>
-    <form action="/inv/update" method="post" >
+    <form id= "updateForm" action="/inv/update" method="post" >
         <p>DIRECTION: The updated inventory item name cannot contain a space or special character of any kind!</p>
 
       <label for="inv_make">inventory make</label>
@@ -42,8 +42,8 @@
       id="inv_description" 
       name="inv_description" 
       required value="<%= typeof inv_description != 'undefined' ? inv_description : '' %>"
-      pattern="^[a-zA-Z\s]+$"
-      title="inventory description must not contain spaces or special characters.">
+      pattern="[\s\S]*"
+      title="inventory description must be unique.">
 
       <label for="inv_price">inventory price</label>
       <input type="number" 
@@ -69,7 +69,13 @@
       pattern="^[a-zA-Z]+$"
       title="inventory color must not contain spaces or special characters.">
 
-      <button type="submit">Update inventory.</button>
+      <button type="submit" disabled>Update inventory.</button>
+
+      <input type="hidden" name="inv_id"
+<% if(locals.inv_id) { %> value="<%= locals.inv_id %>"
+<% } %>>
+
     </form>
   </main>
+  <script src="../../js/inv-update.js"></script>
   

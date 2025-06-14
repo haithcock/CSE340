@@ -38,6 +38,11 @@ router.post(
     regValidate.checkInventoryData,
     utilities.handleErrors(invController.registerInventory),
 );
+router.post(
+    "/update/",
+    regValidate.inventoryRules(),
+    regValidate.checkUpdateData,
+    utilities.handleErrors(invController.updateInventory))
 
 
 

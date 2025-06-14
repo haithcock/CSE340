@@ -66,7 +66,84 @@ async function registerInventory(inv_make, inv_model, inv_year, inv_description,
     return error.message
   }
 } 
+/* ***************************
+ *  Update Inventory Data
+ * ************************** */
+async function updateInventory(
+  inv_id,
+  inv_make,
+  inv_model,
+  inv_description,
+  inv_image,
+  inv_thumbnail,
+  inv_price,
+  inv_year,
+  inv_miles,
+  inv_color,
+  classification_id
+) {
+  try {
+    // Check if any critical field is missing
+    const needsExistingData = 
+      inv_image === null || inv_image === undefined ||
+      inv_thumbnail === null || inv_thumbnail === undefined ||
+      classification_id === null || classification_id === undefined;
 
+    let existingRecord = null;
+    if (needsExistingData) {
+      const existingResult = await pool.query(
+        'SELECT inv_image, inv_thumbnail, classification_id FROM inventory WHERE inv_id = $1',
+        [inv_id]
+      );
+      existingRecord = existingResult.rows[0];
+    }
 
+    // Prepare final values (use existing data if new values are missing)
+    const finalImage = inv_image ?? existingRecord?.inv_image;
+    const finalThumbnail = inv_thumbnail ?? existingRecord?.inv_thumbnail;
+    const finalClassificationId = classification_id ?? existingRecord?.classification_id;
 
-module.exports = {getClassifications, getInventoryByClassificationId, getInventoryByInventoryId, registerClassification, registerInventory};
+    // Validate required fields
+    if (finalImage === null || finalThumbnail === null || finalClassificationId === null) {
+      throw new Error("Missing required fields: inv_image, inv_thumbnail, or classification_id cannot be null");
+    }
+
+    // Execute update with validated values
+    const sql = `
+      UPDATE public.inventory 
+      SET 
+        inv_make = $1, 
+        inv_model = $2, 
+        inv_description = $3, 
+        inv_image = $4, 
+        inv_thumbnail = $5, 
+        inv_price = $6, 
+        inv_year = $7, 
+        inv_miles = $8, 
+        inv_color = $9, 
+        classification_id = $10 
+      WHERE inv_id = $11 
+      RETURNING *
+    `;
+    
+    const data = await pool.query(sql, [
+      inv_make,
+      inv_model,
+      inv_description,
+      finalImage,
+      finalThumbnail,
+      inv_price,
+      inv_year,
+      inv_miles,
+      inv_color,
+      finalClassificationId,  // Use validated classification_id
+      inv_id
+    ]);
+    
+    return data.rows[0];
+  } catch (error) {
+    console.error("model error: " + error);
+    throw error;  // Re-throw for proper error handling upstream
+  }
+}
+module.exports = {getClassifications, getInventoryByClassificationId, getInventoryByInventoryId, registerClassification, registerInventory, updateInventory};
