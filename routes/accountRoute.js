@@ -40,11 +40,15 @@ router.post(
 //Handle account info update
 router.post("/update-info",
   utilities.checkLogin,
+  regValidate.updateAccountRules(),  // NEW VALIDATION
+  regValidate.checkUpdateData,       // NEW VALIDATION HANDLER
   utilities.handleErrors(accountController.updateAccountInfo)
 );
 //Handle password change
 router.post("/update-password",
   utilities.checkLogin,
+  regValidate.passwordRules(),       // NEW VALIDATION
+  regValidate.checkUpdateData,       // NEW VALIDATION HANDLER
   utilities.handleErrors(accountController.changePassword)
 );
 

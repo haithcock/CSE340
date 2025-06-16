@@ -168,9 +168,18 @@ async function buildUpdateAccount(req, res, next) {
 /* ****************************************
 *  Update account information
 * *************************************** */
+// Update account information with email check
 async function updateAccountInfo(req, res) {
+  const { account_id, account_firstname, account_lastname, account_email } = req.body;
+  
   try {
-    const { account_id, account_firstname, account_lastname, account_email } = req.body;
+    // Check if email is being changed to an existing email
+    const existingAccount = await accountModel.getAccountByEmail(account_email);
+    if (existingAccount && existingAccount.account_id != account_id) {
+      req.flash("error", "Email already in use by another account");
+      return res.redirect(`/account/update/${account_id}`);
+    }
+
     const updateResult = await accountModel.updateAccount(
       account_id,
       account_firstname,
@@ -179,28 +188,32 @@ async function updateAccountInfo(req, res) {
     );
 
     if (updateResult) {
+      // Update JWT token with new data
+      const newTokenData = {
+        ...res.locals.accountData,
+        account_firstname,
+        account_lastname,
+        account_email
+      };
+      const accessToken = jwt.sign(newTokenData, process.env.ACCESS_TOKEN_SECRET);
+      res.cookie("jwt", accessToken, { httpOnly: true, maxAge: 3600 * 1000 });
+      
       req.flash("notice", "Account information updated successfully");
+      res.redirect("/account/");
     } else {
       req.flash("error", "Account update failed");
+      res.redirect(`/account/update/${account_id}`);
     }
-    res.redirect("/account/");
   } catch (error) {
     console.error("Error in updateAccountInfo:", error);
     req.flash("error", "Server error during account update");
-    res.redirect(`/account/update/${req.body.account_id}`);
+    res.redirect(`/account/update/${account_id}`);
   }
 }
 
-
+// Simplify password change (validation handled by middleware)
 async function changePassword(req, res) {
   const { account_id, account_password } = req.body;
-  
-  // Complete password validation
-  const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{12,}$/;
-  if (!passwordRegex.test(account_password)) {
-    req.flash("error", "Password must be at least 12 characters with 1 uppercase, 1 number, and 1 special character");
-    return res.redirect(`/account/update/${account_id}`);
-  }
 
   try {
     const hashedPassword = await bcrypt.hash(account_password, 10);
