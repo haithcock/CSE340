@@ -13,6 +13,14 @@ router.get("/", utilities.checkLogin, utilities.handleErrors (accountController.
 //route to logout I think.
 router.get("/logout", accountController.accountLogout);
 
+
+//Display account update view
+router.get("/update/:account_id", 
+  utilities.checkLogin, 
+  utilities.handleErrors(accountController.buildUpdateAccount)
+  
+);
+
 // Route to register a new account 
 router.post(
     "/register",
@@ -21,8 +29,7 @@ router.post(
     utilities.handleErrors(accountController.registerAccount) // The call to the controller if no errors
   );
 
-// Route to build vehicle view
-//router.get("/detail/:vehicleId", invController.buildByVehicleId);
+
 // Process the login attempt
 router.post(
     "/login",
@@ -30,6 +37,16 @@ router.post(
     regValidate.checkLoginData,
     utilities.handleErrors(accountController.accountLogin)
   );
+//Handle account info update
+router.post("/update-info",
+  utilities.checkLogin,
+  utilities.handleErrors(accountController.updateAccountInfo)
+);
+//Handle password change
+router.post("/update-password",
+  utilities.checkLogin,
+  utilities.handleErrors(accountController.changePassword)
+);
 
 
 module.exports = router;

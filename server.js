@@ -13,10 +13,11 @@ const static = require("./routes/static")
 const baseController = require("./controllers/baseControllers")
 const inventoryRoute = require("./routes/inventoryRoute")
 const utilities = require("./utilities/")
+const accountRoute = require("./routes/accountRoute")
 const errorTestRouter = require('./routes/errorTest')
 const session = require("express-session")
 const pool = require('./database/')
-const accountRoute = require("./routes/accountRoute")
+
 const bodyParser = require("body-parser")
 const cookieParser = require("cookie-parser")
 

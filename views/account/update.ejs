@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/base.css">
+</head>
+<body>
+    <%- include('../partials/header') %> 
+    <main>
+        <h1><%= title %></h1>
+        
+        <!-- Display flash messages - SAFE HANDLING -->
+        <% if (typeof message !== 'undefined' && message) { %>
+            <p class="notice"><%= message %></p>
+        <% } %>
+        <% if (typeof errors !== 'undefined' && errors) { %>
+            <p class="error"><%= errors %></p>
+        <% } %>
+        <!-- Account Update Form -->
+        <form action="/account/update-info" method="post">
+            <h2>Account Update</h2>
+            <input type="hidden" name="account_id" value="<%= accountData.account_id %>">
+            
+            <label for="firstname">First Name:</label>
+            <input type="text" id="firstname" name="account_firstname" 
+                   value="<%= accountData.account_firstname %>" required>
+            
+            <label for="lastname">Last Name:</label>
+            <input type="text" id="lastname" name="account_lastname" 
+                   value="<%= accountData.account_lastname %>" required>
+            
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="account_email" 
+                   value="<%= accountData.account_email %>" required>
+            
+            <input type="submit" value="Update Account">
+        </form>
+
+        <!-- Password Change Form -->
+        <form action="/account/update-password" method="post">
+            <h2>Change Password</h2>
+            <input type="hidden" name="account_id" value="<%= accountData.account_id %>">
+            
+            <label for="newPassword">New Password:</label>
+            <input type="password" id="newPassword" name="account_password" required>
+            <p class="instruction">Password must be at least 12 characters with at least 1 uppercase, 1 number, and 1 special character</p>
+            
+            <input type="submit" value="Change Password">
+        </form>
+    </main>
+    <%- include('../partials/footer') %> 
+</body>
+</html>

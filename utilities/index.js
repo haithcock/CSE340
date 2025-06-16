@@ -153,6 +153,19 @@ Util.checkLogin = (req, res, next) => {
     return res.redirect("/account/login")
   }
  }
+ /* ****************************************
+* Middleware to check account type (Employee/Admin)
+**************************************** */
+Util.checkAccountType = (req, res, next) => {
+  if (res.locals.accountData && 
+      (res.locals.accountData.account_type === 'Employee' || 
+       res.locals.accountData.account_type === 'Admin')) {
+    next();
+  } else {
+    req.flash("notice", "Access restricted to employees/admins");
+    return res.redirect("/account/login");
+  }
+};
 
 
 module.exports = Util

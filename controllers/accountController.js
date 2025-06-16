@@ -137,6 +137,86 @@ async function accountLogout(req, res) {
   
   // Redirect to home page
   res.redirect("/");
+
+}
+// Add to accountController.js
+
+async function buildUpdateAccount(req, res, next) {
+  try {
+    let nav = await utilities.getNav();
+    const account_id = req.params.account_id;
+    const accountData = await accountModel.getAccountById(account_id);
+    
+    // Get flash messages
+    const notice = req.flash('notice');
+    const error = req.flash('error');
+    
+    res.render("account/update", {
+      title: "Update Account",
+      nav,
+      message: notice.length ? notice[0] : null, // Pass message to view
+      errors: error.length ? error[0] : null,    // Pass errors to view
+      accountData: accountData
+    });
+  } catch (error) {
+    console.error("Error in buildUpdateAccount:", error);
+    req.flash("error", "Error loading account update page");
+    res.redirect("/account/");
+  }
 }
 
-module.exports = { buildLogin, buildRegister, registerAccount, accountLogin, buildLoggedIn, accountLogout }
+/* ****************************************
+*  Update account information
+* *************************************** */
+async function updateAccountInfo(req, res) {
+  try {
+    const { account_id, account_firstname, account_lastname, account_email } = req.body;
+    const updateResult = await accountModel.updateAccount(
+      account_id,
+      account_firstname,
+      account_lastname,
+      account_email
+    );
+
+    if (updateResult) {
+      req.flash("notice", "Account information updated successfully");
+    } else {
+      req.flash("error", "Account update failed");
+    }
+    res.redirect("/account/");
+  } catch (error) {
+    console.error("Error in updateAccountInfo:", error);
+    req.flash("error", "Server error during account update");
+    res.redirect(`/account/update/${req.body.account_id}`);
+  }
+}
+
+
+async function changePassword(req, res) {
+  const { account_id, account_password } = req.body;
+  
+  // Complete password validation
+  const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{12,}$/;
+  if (!passwordRegex.test(account_password)) {
+    req.flash("error", "Password must be at least 12 characters with 1 uppercase, 1 number, and 1 special character");
+    return res.redirect(`/account/update/${account_id}`);
+  }
+
+  try {
+    const hashedPassword = await bcrypt.hash(account_password, 10);
+    const updateResult = await accountModel.updatePassword(account_id, hashedPassword);
+    
+    if (updateResult) {
+      req.flash("notice", "Password updated successfully");
+    } else {
+      req.flash("error", "Password update failed");
+    }
+    res.redirect("/account/");
+  } catch (error) {
+    console.error("Error in changePassword:", error);
+    req.flash("error", "Server error during password update");
+    res.redirect(`/account/update/${account_id}`);
+  }
+}
+
+module.exports = { buildLogin, buildRegister, registerAccount, accountLogin, buildLoggedIn, accountLogout, buildUpdateAccount, updateAccountInfo, changePassword };
