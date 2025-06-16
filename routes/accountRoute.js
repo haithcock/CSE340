@@ -9,6 +9,10 @@ const regValidate = require('../utilities/account-validation');
 router.get("/login", accountController.buildLogin);
 router.get("/register", accountController.buildRegister);
 router.get("/", utilities.checkLogin, utilities.handleErrors (accountController.buildLoggedIn)); // Default route to login
+
+//route to logout I think.
+router.get("/logout", accountController.accountLogout);
+
 // Route to register a new account 
 router.post(
     "/register",

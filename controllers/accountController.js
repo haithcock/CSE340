@@ -128,4 +128,15 @@ async function buildLoggedIn(req, res, next) {
   })
 }
 
-module.exports = { buildLogin, buildRegister, registerAccount, accountLogin, buildLoggedIn }
+/* ****************************************
+*  Process logout request
+* *************************************** */
+async function accountLogout(req, res) {
+  // Clear the JWT cookie
+  res.clearCookie("jwt");
+  
+  // Redirect to home page
+  res.redirect("/");
+}
+
+module.exports = { buildLogin, buildRegister, registerAccount, accountLogin, buildLoggedIn, accountLogout }
