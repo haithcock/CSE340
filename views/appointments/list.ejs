@@ -1,0 +1,42 @@
+<!--Location: views/appointments/list.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/base.css">
+</head>
+<body>
+  <%- include('../partials/header') %>
+  <main>
+    <h1><%= title %></h1>
+    
+    <% if (appointments.length > 0) { %>
+      <table>
+        <thead>
+          <tr>
+            <th>Vehicle</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Comments</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% appointments.forEach(appointment => { %>
+            <tr>
+              <td><%= appointment.inv_make %> <%= appointment.inv_model %></td>
+              <td><%= new Date(appointment.appointment_date).toLocaleDateString() %></td>
+              <td><%= appointment.appointment_time %></td>
+              <td><%= appointment.comments || 'None' %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } else { %>
+      <p>You have no scheduled appointments.</p>
+    <% } %>
+  </main>
+  <%- include('../partials/footer') %>
+</body>
+</html>

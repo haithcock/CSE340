@@ -14,7 +14,10 @@ if (process.env.NODE_ENV == "development") {
       rejectUnauthorized: false,
     },
 })
-
+pool.query('SELECT NOW()', (err, res) => {
+  if (err) console.error('Database connection error:', err);
+  else console.log('Database connected at:', res.rows[0].now);
+});
 // Added for troubleshooting queries
 // during development
 module.exports = {

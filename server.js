@@ -1,3 +1,4 @@
+//Location: ./server.js
 /* ******************************************
  * This server.js file is the primary file of the 
  * application. It is used to control the project.
@@ -14,12 +15,14 @@ const baseController = require("./controllers/baseControllers")
 const inventoryRoute = require("./routes/inventoryRoute")
 const utilities = require("./utilities/")
 const accountRoute = require("./routes/accountRoute")
+const appointmentRoute = require('./routes/appointmentRoute');
 const errorTestRouter = require('./routes/errorTest')
 const session = require("express-session")
 const pool = require('./database/')
 
 const bodyParser = require("body-parser")
 const cookieParser = require("cookie-parser")
+
 
 /* ***********************
  * Middleware
@@ -66,12 +69,10 @@ app.get('/', utilities.handleErrors(baseController.buildHome))
 app.use("/inv", inventoryRoute)
 app.use('/', errorTestRouter)
 
+//route for appointments
+app.use('/appointments', appointmentRoute);
 
 
-// File Not Found Route - must be last route in list
-app.use(async (req, res, next) => {
-  next({status: 404, message: 'Sorry, we appear to have lost that page.'})
-})
 
 
 
@@ -97,6 +98,13 @@ app.use(async (err, req, res, next) => {
     nav
   });
 });
+
+
+// File Not Found Route - must be last route in list
+app.use(async (req, res, next) => {
+  next({status: 404, message: 'Sorry, we appear to have lost that page.'})
+})
+
 
 
 /* ***********************

@@ -1,3 +1,5 @@
+//location: utilities/index.js
+
 const invModel = require("../models/inventory-model")
 const Util = {}
 const jwt = require("jsonwebtoken")

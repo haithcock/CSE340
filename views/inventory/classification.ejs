@@ -11,4 +11,17 @@
 
 
     <!--The inventory Items Display (line 13)-->
-    <%- grid %>
+  <!-- views/inventory/classification.ejs -->
+<main>
+  <!-- Existing vehicle grid -->
+  <%- include('../partials/vehicle-grid') %> 
+  
+  <!-- Add Test Drive Button ONLY on detail pages -->
+  <% if (locals.loggedin && context.isDetailView && vehicles.length > 0) { %>
+    <div class="test-drive-section">
+      <a href="/appointments/schedule/<%= vehicles[0].inv_id %>" class="btn">
+        Schedule Test Drive
+      </a>
+    </div>
+  <% } %>
+</main>
