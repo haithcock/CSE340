@@ -23,4 +23,7 @@ router.get('/account/appointments',
   utilities.handleErrors(appointmentController.viewAppointments)
 );
 
+
+
+
 module.exports = router;

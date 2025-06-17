@@ -2,7 +2,7 @@
 
 const appointmentModel = require('../models/appointment-model');
 const utilities = require('../utilities/');
-const pool = require('../database/'); 
+//const pool = require('../database/'); 
 // appointmentController.js
 async function buildScheduleForm(req, res) {
     console.log('Building schedule form for inv_id:', req.params.inv_id);
@@ -52,43 +52,37 @@ async function buildScheduleForm(req, res) {
       req.flash('error', errors.join(', '));
       return res.redirect(`/appointments/schedule/${inv_id}`);
     }
-  
-    const client = await pool.connect();
-    try {
-      await client.query('BEGIN');
-  
-      const available = await appointmentModel.isSlotAvailable(appointment_date, appointment_time);
-      if (!available) {
-        throw new Error('Time slot already booked');
-      }
-  
-      const result = await appointmentModel.scheduleAppointment({
-        account_id,
-        inv_id,
-        appointment_date,
-        appointment_time,
-        comments
-      });
-  
-      if (result.rowCount > 0) {
-        await client.query('COMMIT');
-        req.flash('notice', 'Test drive scheduled successfully!');
-        return res.redirect('/appointments/account/appointments');
-      } else {
-        throw new Error('Failed to schedule appointment');
-      }
+ try {
+        // Use the model for transaction management
+        const result = await appointmentModel.scheduleAppointmentWithTransaction({
+            account_id,
+            inv_id,
+            appointment_date,
+            appointment_time,
+            comments
+        });
+        
+        if (result) {
+            req.flash('notice', 'Test drive scheduled successfully!');
+            return res.redirect('/appointments/account/appointments');
+        } else {
+            throw new Error('Failed to schedule appointment');
+        }
     } catch (error) {
-      await client.query('ROLLBACK');
-      console.error('Appointment Scheduling Error:', error);
-      req.flash('error', error.message || 'Database error occurred');
-      return res.redirect(`/appointments/schedule/${inv_id}`);
-    } finally {
-      client.release();
+        console.error('Appointment Scheduling Error:', error);
+        
+        if (error.code === '23505') { // Unique constraint violation
+            req.flash('error', 'This time slot is already booked');
+        } else {
+            req.flash('error', error.message || 'Database error occurred');
+        }
+        
+        return res.redirect(`/appointments/schedule/${inv_id}`);
     }
-  
-  
-  
 }
+
+  
+
 async function viewAppointments(req, res) {
   const account_id = res.locals.accountData.account_id;
   const nav = await utilities.getNav();
@@ -102,4 +96,14 @@ async function viewAppointments(req, res) {
   });
 }
 
-module.exports = { buildScheduleForm, scheduleAppointment, viewAppointments };
+async function buildMyAppointments(req, res) {
+  const account_id = res.locals.accountData.account_id
+  const appointments = await appointmentModel.getAppointmentsByAccountId(account_id)
+  res.render("appointment/myAppointments", {
+    title: "My Appointments",
+    appointments,
+  })
+}
+
+
+module.exports = { buildScheduleForm, scheduleAppointment, viewAppointments, };
