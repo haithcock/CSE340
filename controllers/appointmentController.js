@@ -2,7 +2,7 @@
 
 const appointmentModel = require('../models/appointment-model');
 const utilities = require('../utilities/');
-//const pool = require('../database/'); 
+const pool = require('../database/index'); 
 // appointmentController.js
 async function buildScheduleForm(req, res) {
     console.log('Building schedule form for inv_id:', req.params.inv_id);
